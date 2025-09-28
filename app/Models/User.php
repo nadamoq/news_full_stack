@@ -26,6 +26,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -50,7 +51,15 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
+    public function comments (){
+        return $this->hasMany(Comment::class);
+    }
     protected function emailHasVerified():Attribute{
+
         return new Attribute(get:fn()=>$this->hasVerifiedEmail()?'verified':'not verifed');
     }
+    public function getIsAdminAttribute(): bool
+{
+    return ($this->role === 'admin');
+}
 }

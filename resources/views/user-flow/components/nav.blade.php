@@ -25,7 +25,20 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('contact.create')}}">Contact</a>
                 </li>
-
+                <li class="nav-item"style='margin-left: 80px; '>
+                @guest
+                                                 
+                    <a class="nav-link" href="{{route('auth.show-login')}}">Login</a>
+                
+                 @endguest
+                 @auth
+                   @if(auth()->user()->is_admin)
+                       
+                            <a class="nav-link" href="{{route('news.index')}}">Dashboard</a>
+                        
+                     @endif
+                @endauth
+                </li>
             </ul>
         </div>
     </div>

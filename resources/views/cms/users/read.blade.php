@@ -1,13 +1,13 @@
 @extends('cms.master-admin')
 @section('content')
-<div class="content-wrapper" style="min-height: 1345.6px;">
+<div class="content-wrapper" >
     <section class="content">
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Bordered Table</h3>
+                <h3 class="card-title">All Users Table</h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -18,7 +18,7 @@
                       <th>name</th>
                       <th>email</th>
                       <th>email status</th>
-                      <th >role</th>
+                      <th>role</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -55,4 +55,5 @@
       
       </div><!-- /.container-fluid -->
     </section>
+</div>
 @endsection

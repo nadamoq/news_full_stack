@@ -24,7 +24,7 @@
     </div>
     <div class="card-body">
       <p class="login-box-msg">You forgot your password? Here you can easily retrieve a new password.</p>
-      <form action="recover-password.html" method="post">
+      <form >
        
         <div class="row">
           <div class="col-12">

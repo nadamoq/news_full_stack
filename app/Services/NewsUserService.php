@@ -7,12 +7,14 @@ use App\Models\News;
 class NewsUserService{
     
      public static function lastNews() {
-        return News::latestPublished()->with(['category','images']); // اختيارياً
+        return News::latestPublished()->with(['category','images']); 
     }
     public static function catNews($id) {
+
         return News::where('category_id', $id)
                    ->latestPublished()
-                   ->with(['category','images']); // اختيارياً
+                   ->with(['category','images']);
+                   
     }
     
 

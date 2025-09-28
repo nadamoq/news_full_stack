@@ -23,10 +23,10 @@ class StoreCommentRequest extends FormRequest
     {
         return [
             //
-        'name'    => 'required|string|min:3|max:30',
+       // 'name'    => 'required|string|min:3|max:30',
         'content' => 'required|string|max:250',
-        'parent_id'=>'sometimes|numeric|exists:comments,id',
-        'news_id'=>'required|numeric|exists:news,id'
+        'parent_id'=>'nullable|integer|exists:comments,id',
+        'news_id'=>'required|integer|exists:news,id'
         ];
     }
 }

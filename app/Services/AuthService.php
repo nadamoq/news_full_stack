@@ -14,9 +14,19 @@ class AuthService
         if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']],
             $data['remember_me'])) {
             session()->regenerate();
-            return true;
+             $user=  auth()->user();
+            $redirect= $user->is_admin ? 'news.index': 'user-view.index';
+              
+        
+            return [
+                'ok'=>true,
+                'redirect'=>$redirect,
+                'message'=>'logged in'
+            ];
         } else {
-            return false;
+            return ['ok'=>false,
+             'message'=>'wrong email or password'
+        ];
         }
     }
     public static function register(array $data){

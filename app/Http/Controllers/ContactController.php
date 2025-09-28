@@ -18,8 +18,17 @@ class ContactController extends Controller
        $message=Contact::create($request->validated());
        return response()->json(['message'=>$message?'sent ! thank you':'error'],
        $message?Response::HTTP_CREATED:Response::HTTP_BAD_REQUEST);
+
     }public function index(){
-        $messages =Contact::latest('created_at')->all();
-        return response();
+
+        $messages =Contact::latest('created_at')->paginate();
+        return response()->view('cms.users.contact',['contacts'=>$messages]);
     }
+    public function destroy($contact){
+
+        $deleted=Contact::destroy($contact);
+        return response()->json(['message'=>$deleted?'deleted successfuly':'error'],
+        $deleted?Response::HTTP_OK:Response::HTTP_BAD_REQUEST);
+    }
+   
 }

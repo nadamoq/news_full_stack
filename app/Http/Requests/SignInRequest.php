@@ -28,8 +28,8 @@ class SignInRequest extends FormRequest
             'name'=>'required|string',
             'email'=>'required|email|unique:users,email',
             'terms'=>'accepted',
-            'password'=>['required','string','confirmed',Password::min(3)->max(30)->letters()->numbers()
-           // uncompromised()->
+            'password'=>['required','string','confirmed',Password::min(3)->max(30)->letters()->uncompromised()->numbers()
+           
             ]
         ];
     }

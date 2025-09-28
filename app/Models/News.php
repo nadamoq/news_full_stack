@@ -26,8 +26,10 @@ class News extends Model
     }
     public function comments()
     {
-       return $this->hasMany(Comment::class)
+       return $this->hasMany(Comment::class,'news_id')
                     ->whereNull('parent_id')
+                    //عملت هيك لتسهيل استدعاء الردود مع التعليق نفسه لما انادي المودل 
+                    ->with('children')
                     ->orderBy('created_at', 'asc');
     }
     

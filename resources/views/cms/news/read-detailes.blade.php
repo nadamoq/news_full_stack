@@ -16,7 +16,7 @@
       </h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-            <a href="index.html">Home</a>
+            <a href="">{{$news->category->name}}</a>
             </li>
             <li class="breadcrumb-item active">news details</li>
         </ol>
@@ -42,9 +42,13 @@
             {!! $news->content!!}
 
             <hr>
+             <div class="col-md-5">
             <button id='button_pub' class="btn btn-primary" type ='button'onclick='publish({{$news->id}})'>publish to public 
                         <span class="glyphicon glyphicon-chevron-right"></span>
             </button>
+             </div>
+             <hr>
+             </div>
             </div>
           </div>
         </div>

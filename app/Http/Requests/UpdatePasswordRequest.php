@@ -25,8 +25,8 @@ class UpdatePasswordRequest extends FormRequest
         return [
             //
             'current_password'=>'required|current_password:',
-            'new_password'=>['required','confirmed','string',Password::min(3)->max(30)->letters()->numbers()]
-            //->uncompromised()
+            'new_password'=>['required','confirmed','string',Password::min(3)->max(30)->letters()->numbers()->uncompromised()]
+          
         ];
     }
 }

@@ -31,13 +31,14 @@ class CommentController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreCommentRequest $request)
-    {
+    {  
+        $data=$request->validated();
+        $data['user_id']=auth()->user()->id;        
+        $result = Comment::create($data);
 
-    $result = Comment::create($request->validated());
-
-    return response()->json([
-        'message' => $result ? 'Commented Successfully' : 'Error'
-    ], $result ? Response::HTTP_CREATED : Response::HTTP_BAD_REQUEST);
+        return response()->json([
+            'message' => $result ? 'Commented Successfully' : 'Error'
+        ], $result ? Response::HTTP_CREATED : Response::HTTP_BAD_REQUEST);
     }
 
     /**

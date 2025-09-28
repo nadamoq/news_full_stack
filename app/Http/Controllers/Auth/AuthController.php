@@ -46,10 +46,10 @@ class AuthController extends Controller
     {
 
         $result = AuthService::login($request->validated());
-        if ($result) {
-            return response()->json(['message' => 'logged in']);
+        if ($result['ok']) {           
+            return response()->json(['message' => $result['message'],'redirect'=>route($result['redirect'])], 200);
         } else {
-          return  response()->json(['message' => 'wrong email or password'], 401);
+            return  response()->json(['message' => $result['message']], 401);
         }
     }
 
@@ -75,7 +75,12 @@ class AuthController extends Controller
     public function verify(EmailVerificationRequest $request)
     {
         $request->fulfill();
-        return redirect()->route('users.index');
+        $user = auth()->user();
+
+        $redirect = $user->is_admin
+            ? 'news.index'
+            : 'user-view.index';
+        return redirect()->route($redirect);
     }
     public function forgotPassword()
     {
@@ -83,7 +88,7 @@ class AuthController extends Controller
     }
     public function resetPasswordRequest(EmailValidation $request)
     {
-       $status = PasswordService::sendResetRequest($request->validated());
+        $status = PasswordService::sendResetRequest($request->validated());
         return response()->json(
             ['message' => __($status)],
             $status == Password::RESET_LINK_SENT ?

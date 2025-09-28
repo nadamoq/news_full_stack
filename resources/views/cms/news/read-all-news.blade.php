@@ -3,6 +3,7 @@
 @section('style')
 
 
+
     <link href="{{asset('assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/modern-business.css')}}" rel="stylesheet">
         <link rel="stylesheet" href="{{asset('cms/plugins/toastr/toastr.min.css')}}">
@@ -22,27 +23,31 @@
             <hr>
 
                 <!-- news title Two -->
-                <div class="row">
+                <div class="row"id='news-{{$item->id}}'>
                     <div class="col-md-7">
                        
-
                     <a href="{{route('news.show',$item->id)}}">
                         <img class="img-fluid full-width h-200 rounded mb-3 mb-md-0" src="{{Storage::url($item->images->first()->path)}}" alt="{{$item->images->first->path}}">
                     </a>
                     </div>
                     <div class="col-md-5">
+                     <button type="button" onclick="del({{$item->id}})" class="close position-absolute" style="top: 5px; right: 10px;" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+
+
                     <h3>{{$item->title}}</h3>
                     <p>{{$item->description}}</p>
-                     <button id="button_status_{{$item->id}}" class="btn btn-primary" type ='button' onclick='arch({{$item->id}})'
+
+                     <button id="button_status_{{$item->id}}" class="btn btn-primary" type ='button' onclick='arch({{$item->id}})'> 
                       @if ($item->status=='archived')
-                       disabled
-                      @endif> @if ($item->status=='archived')
-                       archived
+                       unarchive
                       @else
                          archive
                       @endif 
                         <span class="glyphicon glyphicon-chevron-right"></span>
                       </button>
+                      
                     <a class="btn btn-primary"href='{{route('news.show',$item->id)}}'>View details
                         <span class="glyphicon glyphicon-chevron-right"></span>
                     </a>
@@ -73,6 +78,19 @@
       toastr.success(response.data.message)    
       document.getElementById(`button_status_${id}`).innerText=response.data.button;
 
+    }).catch(function(error){
+      console.log();
+      
+      toastr.error(error.response.data.message)
+    })
+  }
+    function del(id){
+    axios.delete(`/news/news/${id}`)
+    .then(function(response){
+      console.log();      
+      toastr.success(response.data.message);
+      document.getElementById(`news-${id}`).remove();
+      location.reload();
     }).catch(function(error){
       console.log();
       

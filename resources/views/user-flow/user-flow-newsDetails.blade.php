@@ -9,6 +9,7 @@
     <link href="{{asset('assets/css/modern-business.css')}}" rel="stylesheet">
     @endsection
     @section('content')
+
       <div class="container">
     <div class="content-wrapper">
      <section class="content">
@@ -44,62 +45,70 @@
             {!! $news->content!!}
 
             <hr>
-          <div class="card my-4">
-            <h5 class="card-header">Leave a Comment:</h5>
-            <div class="card-body">
-              <form id='form'>
-                <input  id="name"    class="form-control js-name" placeholder="your name">
-                <textarea id="content" class="form-control js-content" rows="3" placeholder="your comment"></textarea>
+                  <div class="card my-4">
+              <h5 class="card-header">Leave a Comment:</h5>
 
-                <button type="button" class="btn btn-primary" onclick="comment(this)">Submit</button>
+              @guest
+                    <div class="alert alert-info my-3">
+                      you have to log in so you can comment
+                      <a href="{{ route('auth.login') }}" class="btn btn-sm btn-primary ms-2">Login</a>
+                    </div>
+              @endguest
 
-              </form>
-            </div>
-          </div>
-             
-        @foreach ($news->comments as $comment)
-  
-          <div class="media mb-4">
-            <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-            <div class="media-body">
-              <h5 class="mt-0">{{$comment->name}}</h5>
-              {{$comment->content}}
-               <button class="btn btn-sm btn-outline-secondary mb-3" type="button"
-                onclick="toggleReplyForm({{ $comment->id }})">
-                  Reply
-                </button>
-                   
-                <form id="reply-form-{{ $comment->id }}" class="comment-form border p-3 rounded mb-3"
-                      data-parent-id="{{ $comment->id }}" style="display:none;">
-                  <div class="form-group">
-                    <label>الاسم</label>
-                    <input  class="form-control js-name" placeholder="اكتب اسمك">
-                  
-                  </div>
-                  <div class="form-group">
-                  
-                  <textarea class="form-control js-content" rows="2" placeholder="اكتب ردّك"></textarea>
-
-                  </div>
-                 <button type="button" class="btn btn-sm btn-primary" onclick="comment(this, {{ $comment->id }})">أرسل الرد</button>
-
+              @auth
+              <div class="card-body">
+                <form id="form">
+                  {{-- <input class="form-control js-name" placeholder="your name"> --}}
+                  <textarea class="form-control js-content" rows="3" placeholder="your comment"></textarea>
+                  <button type="button" class="btn btn-primary" onclick="comment(this)">Submit</button>
                 </form>
+              </div>
+            </div>
+              @endauth
+           
 
-             @foreach ($comment->children?? collect() as $reply)
-                                      
-              <div class="media mt-4">
+            @foreach ($news->comments as $comment)
+              <div class="media mb-4">
                 <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
                 <div class="media-body">
-                  <h5 class="mt-0">{{$reply->name}}</h5>
-                {{$reply->content}} </div>
-              </div> @endforeach   
-            
-            
-
-            </div>
-          </div>
-       @endforeach
+                  <h5 class="mt-0">{{ $comment->user->name }}</h5>
+                  {{ $comment->content }}
+                    @auth
            
+                  <button class="btn btn-sm btn-outline-secondary mb-3" type="button"
+                          onclick="toggleReplyForm({{ $comment->id }})">
+                    Reply
+                  </button>
+                  
+                  <form id="reply-form-{{ $comment->id }}" class="comment-form border p-3 rounded mb-3"
+                        style="display:none;">
+                    <div class="form-group">
+                      {{-- <label>الاسم</label> --}}
+                      {{-- <input class="form-control js-name" placeholder="your name"> --}}
+                    </div>
+                    <div class="form-group">
+                      <textarea class="form-control js-content" rows="2" placeholder='reply '></textarea>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-primary"
+                            onclick="comment(this, {{ $comment->id }})">
+                            send a Reply
+                    </button>
+                  </form>
+                  @endauth
+                  @foreach (($comment->children) ?? collect() as $reply)
+                    <div class="media mt-4">
+                      <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                      <div class="media-body">
+                        <h5 class="mt-0">{{ $reply->user->name }}</h5>
+                        {{ $reply->content }}
+                      </div>
+                    </div>
+                  @endforeach
+                </div>
+              </div>
+            @endforeach
+
+         
             </div>
           </div>
         </div>
@@ -109,38 +118,51 @@
     @endsection
     @section('script')
            <!-- Bootstrap core JavaScript -->
-       <script src="{{asset('cms/plugins/toastr/toastr.min.js')}}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
- <script>
+        <script src="{{asset('cms/plugins/toastr/toastr.min.js')}}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>
   ///////////////////////////////////////////////////////
-  function toggleReplyForm(id){
-  const el = document.getElementById('reply-form-' + id);
-  el.style.display = (!el || el.style.display === 'none' || !el.style.display) ? 'block' : 'none';
-  }
-  //////////////////////////
+  
  
-     function comment(btn, parentId = null){
-    // خُذي نفس النموذج الذي يحوي الزر
-    const form = btn.closest('form');
-        const data = {
-          name: document.getElementById('name').value,
-          content: document.getElementById('content').value,
-          news_id: {{ $news->id }}
-        };
-        if (id != null) data.parent_id = id;
+    function toggleReplyForm(id){
 
-        axios.post('{{route('comment.store')}}',data
-        )
-            .then(function(response){
+      const el = document.getElementById('reply-form-' + id);
+      if (!el) return;
+      el.style.display = (el.style.display === 'none') ? 'block' : 'none';
+    }
+    function comment(btn, parentId = null){
+      
+      const form = btn.closest('form');
+        if (!form) return;
+
+        //const name = form.querySelector('.js-name').value.trim();
+        const content = form.querySelector('.js-content').value.trim();
+
+        btn.disabled = true;
+        btn.innerText = 'sending..';
+
+        axios.post('{{ route('comment.store') }}', {
+           // name: name,
+            content: content,
+            news_id: {{ $news->id }},
+            parent_id: parentId
+        })
+        .then(function(response){
             toastr.success(response.data.message);
-            document.getElementById('form').reset();
-            if (parentId !== null) form.style.display = 'none'; 
-            })
-            .catch(function(error){
-            console.log(error)
-            toastr.error(error.response.data.message);
-            })
-        }
+            form.reset();
+            if (parentId !== null) form.style.display = 'none';
+            location.reload();
+        })
+        .catch(function(error){
+            toastr.error(error.response?.data?.message || 'sth went wrong');
+            console.error(error);
+        })
+        .finally(function(){
+            btn.disabled = false;
+            btn.innerText='send';
+        });
+    }
+
     </script>
     <!-- Bootstrap core JavaScript -->
     

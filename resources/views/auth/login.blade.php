@@ -18,7 +18,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="../../index2.html"><b>Admin</b>LTE</a>
+    <b>Admin</b>LTE
   </div>
   <!-- /.login-logo -->
   <div class="card">
@@ -53,7 +53,7 @@
           </div>
           <!-- /.col -->
           <div class="col-4">
-            <button type="button" onclick='login()' class="btn btn-primary btn-block">Sign In</button>
+            <button type="button" onclick='login()' class="btn btn-primary btn-block">Log In</button>
           </div>
           <!-- /.col -->
         </div>
@@ -93,7 +93,8 @@
     )
     .then(function(response){
       toastr.success(response.data.message);
-      window.location.href='{{route('users.index')}}'
+       window.location.href = response.data.redirect;
+      
     })
     .catch(function(error){
       console.log(error)
